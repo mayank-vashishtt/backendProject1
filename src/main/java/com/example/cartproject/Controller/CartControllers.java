@@ -1,13 +1,16 @@
 package com.example.cartproject.Controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.*;
 
 @RestController
 @RequestMapping("/api/carts")
 public class CartControllers {
 
-    FakeStoreCartServices fakeStoreCartServices = new FakeStoreCartServices();
-
+    @Autowired
+    private FakeStoreCartServices fakeStoreCartServices;
 
     // Get Limited Cart Items
     @GetMapping("/limited")
@@ -29,7 +32,7 @@ public class CartControllers {
 
     // Get Cart Items in Date Range
     @GetMapping("/dateRange")
-    public List<Cart> getAllCart(@RequestParam("startdate") String startDate, @RequestParam("enddate") String endDate) {
+    public List<Cart> getCartInDateRange(@RequestParam("startdate") String startDate, @RequestParam("enddate") String endDate) {
         System.out.println(startDate + " " + endDate);
         return fakeStoreCartServices.getCartInDateRange(startDate, endDate);
     }
@@ -37,36 +40,31 @@ public class CartControllers {
     // Get Cart Item By Id
     @GetMapping("/{id}")
     public Cart getCart(@PathVariable Long id) {
-
         return fakeStoreCartServices.getCart(id);
     }
 
-
-    //Get User Cart
-
+    // Get User Cart
     @GetMapping("/user/{userId}")
     public List<Cart> getUserCarts(@PathVariable Long userId) {
-        return  fakeStoreCartServices.getUserCarts(userId);
+        return fakeStoreCartServices.getUserCarts(userId);
     }
 
     // Add a new Product in Cart
-    @PostMapping(
-            value = "", consumes = "application/json", produces = "application/json")
-    public Cart createPerson(@RequestBody Cart cart) {
+    @PostMapping(value = "", consumes = "application/json", produces = "application/json")
+    public Cart createCart(@RequestBody Cart cart) {
         return fakeStoreCartServices.addNewCartProduct(cart);
     }
 
     // Update a Product in Cart
     @PutMapping("/{id}")
-    public Cart updateCart(@PathVariable Long id) {
-        return fakeStoreCartServices.updateAProduct(id);
+    public Cart updateCart(@PathVariable Long id, @RequestBody Cart cart) {
+        return fakeStoreCartServices.updateAProduct(id, cart);
     }
 
     // Delete a Product from Cart
     @DeleteMapping("/{id}")
     public String deleteCart(@PathVariable Long id) {
         fakeStoreCartServices.deleteCart(id);
-        return  "Product deleted successfully with "+ id;
+        return "Product deleted successfully with " + id;
     }
-
 }
